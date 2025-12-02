@@ -1,6 +1,6 @@
-const proxyUrl = "http://localhost:9933";
-const client = Deno.createHttpClient({ proxy: { url: proxyUrl } });
-// const client = Deno.createHttpClient();
+// const proxyUrl = "http://localhost:9933";
+// const client = Deno.createHttpClient({ proxy: { url: proxyUrl } });
+const client = Deno.createHttpClient({});
 
 async function httpfetch(
   input: RequestInfo | URL,
