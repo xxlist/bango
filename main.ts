@@ -1,6 +1,10 @@
-// const proxyUrl = "http://localhost:9933";
-// const client = Deno.createHttpClient({ proxy: { url: proxyUrl } });
-const client = Deno.createHttpClient({});
+console.log(Deno.env.get("HTTP_PROXY"));
+
+const client = Deno.env.has("HTTP_PROXY")
+  ? Deno.createHttpClient({
+    proxy: { url: Deno.env.get("HTTP_PROXY") as string },
+  })
+  : Deno.createHttpClient({});
 
 async function httpfetch(
   input: RequestInfo | URL,
@@ -107,22 +111,31 @@ async function* bangoGen(name: string) {
   }
 }
 
+async function* nameGen() {
+  const text = await Deno.readTextFile("artist.txt");
+  for (const line of text.split("\n")) {
+    yield line.trim();
+  }
+}
+
 async function main(args: Array<string>): Promise<void> {
-  const result: Array<string> = [];
+  // const result: Array<string> = [];
 
-  let name = "叶山さゆり";
-  if (args.length > 0) {
-    name = args[0];
-  }
+  // let name = "叶山さゆり";
+  // if (args.length > 0) {
+  //   name = args[0];
+  // }
 
-  const iter = bangoGen(name);
-  for await (const e of iter) {
-    // console.log(e);
-    result.push(e);
-  }
+  for await (const name of nameGen()) {
+    console.log(`=== ${name} ===`);
+    for await (const bango of bangoGen(name)) {
+      console.log(bango);
+      // result.push(e);
+    }
 
-  for (const e of result) {
-    console.log(e);
+    // for (const e of result) {
+    //   console.log(e);
+    // }
   }
 }
 

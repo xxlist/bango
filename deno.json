@@ -1,6 +1,7 @@
 {
   "tasks": {
     "dev": "deno run -A --watch main.ts",
+    "local": "HTTP_PROXY=http://localhost:9933 deno run -A main.ts",
     "start": "deno run -A main.ts"
   },
   "imports": {
