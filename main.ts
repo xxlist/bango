@@ -123,7 +123,7 @@ async function* nameGen() {
 
 async function main(_args: Array<string>): Promise<void> {
   const outFile = "bango.txt";
-  const out = await Deno.open(outFile, { read: false, write: true });
+  const out = await Deno.create(outFile);
   let error;
   try {
     const enc = new TextEncoder();
