@@ -114,28 +114,35 @@ async function* bangoGen(name: string) {
 async function* nameGen() {
   const text = await Deno.readTextFile("artist.txt");
   for (const line of text.split("\n")) {
-    yield line.trim();
+    const name = line.trim();
+    if (name.length > 0) {
+      yield name;
+    }
   }
 }
 
-async function main(args: Array<string>): Promise<void> {
-  // const result: Array<string> = [];
-
-  // let name = "叶山さゆり";
-  // if (args.length > 0) {
-  //   name = args[0];
-  // }
-
-  for await (const name of nameGen()) {
-    console.log(`=== ${name} ===`);
-    for await (const bango of bangoGen(name)) {
-      console.log(bango);
-      // result.push(e);
+async function main(_args: Array<string>): Promise<void> {
+  const outFile = "bango.txt";
+  const out = await Deno.open(outFile, { read: false, write: true });
+  let error;
+  try {
+    const enc = new TextEncoder();
+    for await (const name of nameGen()) {
+      console.log(`=== ${name} ===`);
+      await out.write(enc.encode(`=== ${name} ===`));
+      // TODO: uniq
+      for await (const bango of bangoGen(name)) {
+        console.log(bango);
+        await out.write(enc.encode(bango));
+      }
     }
-
-    // for (const e of result) {
-    //   console.log(e);
-    // }
+  } catch (e) {
+    error = e;
+  } finally {
+    out.close();
+    if (error != null) {
+      await Deno.remove(outFile);
+    }
   }
 }
 
