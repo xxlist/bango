@@ -129,11 +129,11 @@ async function main(_args: Array<string>): Promise<void> {
     const enc = new TextEncoder();
     for await (const name of nameGen()) {
       console.log(`=== ${name} ===`);
-      await out.write(enc.encode(`=== ${name} ===`));
+      await out.write(enc.encode(`=== ${name} ===\n`));
       // TODO: uniq
       for await (const bango of bangoGen(name)) {
         console.log(bango);
-        await out.write(enc.encode(bango));
+        await out.write(enc.encode(bango + "\n"));
       }
     }
   } catch (e) {
